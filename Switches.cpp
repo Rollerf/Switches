@@ -8,11 +8,11 @@ Switches::Switches(unsigned long setPointTime, int n_Pin){
     this -> n_Pin = n_Pin;
 }
 
-bool Switches::interlockButton(bool risingEdge){
+bool Switches::interlockButton(bool fallingEdge){
 
     switchState=digitalRead(n_Pin);
 
-    if (switchState == risingEdge){
+    if (switchState == !fallingEdge){
         if(lastState != switchState && (millis() >= initTime + setPointTime)){
             lastState = switchState;
             interlockOutput = !interlockOutput;
@@ -20,13 +20,13 @@ bool Switches::interlockButton(bool risingEdge){
     }
     else {
         initTime = millis();
-		lastState = !risingEdge;
+		lastState = fallingEdge;
     }
 
     return interlockOutput;
 }
 
-bool Switches::switchMode(){
+bool Switches::switchMode(bool invert){
 
     switchState=digitalRead(n_Pin);
 
@@ -38,5 +38,10 @@ bool Switches::switchMode(){
     else {
         initTime = millis();
     } 
-    return lastState;
+	if(invert){
+		return !lastState;
+	}
+	else{
+		return lastState;
+	}    
 }

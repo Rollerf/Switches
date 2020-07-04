@@ -7,7 +7,6 @@ Switches* switch2;
 #define pin5 5
 
 void setup() {
-  // put your setup code here, to run once:
   pinMode(pin4,INPUT_PULLUP);
   pinMode(pin5,INPUT_PULLUP);
 
@@ -16,23 +15,19 @@ void setup() {
   Serial.begin(9600);
 
   while(!Serial);
-
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
-  if(switch1->switchMode()){
+  if(switch1->switchMode(false)){
     Serial.println("SwitchMode 1");
   }else{
     Serial.println("SwitchMode 0");
   }
-//interlockButton(false) takes the falling edge
-//interlockButton(true) takes the rising edge
-  if(switch2->interlockButton(false)){
+//interlockButton(true) takes the falling edge
+//interlockButton(false) takes the rising edge
+  if(switch2->interlockButton(true)){
     Serial.println("Button 1");    
   }else{
     Serial.println("Button 0");  
   }
-
 }
