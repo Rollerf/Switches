@@ -1,42 +1,92 @@
 #include "Switches.h"
 
-Switches::Switches(unsigned long setPointTime, int n_Pin){
-    this -> setPointTime = setPointTime;
+Switches::Switches(unsigned long setPointTime, int n_Pin)
+{
+    this->setPointTime = setPointTime;
     lastState = 0;
     initTime = 0;
     interlockOutput = 0;
-    this -> n_Pin = n_Pin;
+    this->n_Pin = n_Pin;
 }
 
-bool Switches::interlockButton(bool risingEdge){
+bool Switches::interlockButton(bool fallingEdge)
+{
+    switchState = digitalRead(n_Pin);
 
-    switchState=digitalRead(n_Pin);
-
-    if (switchState == risingEdge){
-        if(lastState != switchState && (millis() >= initTime + setPointTime)){
+    if (switchState == !fallingEdge)
+    {
+        if (lastState != switchState && (millis() >= initTime + setPointTime))
+        {
             lastState = switchState;
             interlockOutput = !interlockOutput;
         }
     }
-    else {
+    else
+    {
         initTime = millis();
-		lastState = !risingEdge;
+        lastState = fallingEdge;
     }
 
     return interlockOutput;
 }
 
-bool Switches::switchMode(){
+bool Switches::switchMode(bool invert)
+{
+    switchState = digitalRead(n_Pin);
 
-    switchState=digitalRead(n_Pin);
-
-    if (switchState != lastState){
-        if (millis() >= initTime + setPointTime){
+    if (switchState != lastState)
+    {
+        if (millis() >= initTime + setPointTime)
+        {
             lastState = switchState;
-        } 
+        }
     }
-    else {
+    else
+    {
         initTime = millis();
-    } 
-    return lastState;
+    }
+    if (invert)
+    {
+        return !lastState;
+    }
+    else
+    {
+        return lastState;
+    }
+}
+
+bool Switches::buttonMode(bool pullUp)
+{
+    switchState = digitalRead(n_Pin);
+
+    if (pullUp)
+    {
+        if (switchState == 0)
+        {
+            if (millis() >= initTime + setPointTime)
+            {
+                return 1;
+            }
+        }
+        else
+        {
+            initTime = millis();
+        }
+    }
+    else
+    {
+        if (switchState == 1)
+        {
+            if (millis() >= initTime + setPointTime)
+            {
+                return 1;
+            }
+        }
+        else
+        {
+            initTime = millis();
+        }
+    }
+	
+	return 0;
 }
