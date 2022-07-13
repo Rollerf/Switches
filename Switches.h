@@ -20,7 +20,7 @@ public:
     //Constructor
     Switches(unsigned long setPointTime, int n_Pin);
     //Destructor
-    Switches::~Switches();
+    ~Switches();
     //switchMode works for normal switch when received false. But if received true, it returns the inverted value
     bool switchMode(bool invert);
     //buttonMode works for normal button when received false. But if received true, it takes 0 like the press value
